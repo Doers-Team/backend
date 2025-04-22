@@ -74,8 +74,12 @@ WSGI_APPLICATION = 'doers.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'doers_db',
+        'USER': 'kiripupsik',
+        'PASSWORD': 'kiriLLpup565567',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
