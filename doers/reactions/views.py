@@ -1,12 +1,83 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
 from rest_framework import status
 from . import models
 from ideas.models import Idea
 from . import serializers
 
 
+class IdeaLikeViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.IdeaLikesSerializer
+
+    def get_queryset(self):
+        idea_id = self.kwargs.get('idea_id')
+        try:
+            idea = Idea.objects.get(pk=idea_id)
+        except Idea.DoesNotExist:
+            raise NotFound("Idea not found")
+        return models.IdeaLike.objects.filter(idea=idea)
+
+    def perform_create(self, serializer):
+        idea_id = self.kwargs.get('idea_id')
+        idea = Idea.objects.get(pk=idea_id)
+        serializer.save(idea=idea, author=self.request.user)
+
+
+class IdeaSubscriptionViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.IdeaSubscriptionsSerializer
+
+    def get_queryset(self):
+        idea_id = self.kwargs.get('idea_id')
+        try:
+            idea = Idea.objects.get(pk=idea_id)
+        except Idea.DoesNotExist:
+            raise NotFound("Idea not found")
+        return models.IdeaSubscription.objects.filter(idea=idea)
+
+    def perform_create(self, serializer):
+        idea_id = self.kwargs.get('idea_id')
+        idea = Idea.objects.get(pk=idea_id)
+        serializer.save(idea=idea, author=self.request.user)
+
+
+class IdeaCommentViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.IdeaCommentsSerializer
+
+    def get_queryset(self):
+        idea_id = self.kwargs.get('idea_id')
+        try:
+            idea = Idea.objects.get(pk=idea_id)
+        except Idea.DoesNotExist:
+            raise NotFound("Idea not found")
+        return models.IdeaComment.objects.filter(idea=idea)
+
+    def perform_create(self, serializer):
+        idea_id = self.kwargs.get('idea_id')
+        idea = Idea.objects.get(pk=idea_id)
+        serializer.save(idea=idea, author=self.request.user)
+
+class IdeaReactionsAPIView(APIView):
+    def get(self, request, idea_id):
+        try:
+            idea = Idea.objects.get(id=idea_id)
+        except Idea.DoesNotExist:
+            return Response({'error': f'Idea "{idea_id}" not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        subscriptions = models.IdeaSubscription.objects.filter(idea=idea)
+        likes = models.IdeaLike.objects.filter(idea=idea)
+        comments = models.IdeaComment.objects.filter(idea=idea)
+
+        serializer = serializers.IdeaReactionsSerializer({
+            'subscriptions': subscriptions,
+            'likes': likes,
+            'comments': comments,
+        })
+        return Response(serializer.data)
+
+"""
 class IdeasReactionsAPIView(APIView):
     def get(self, request):
         ideas = Idea.objects.all().prefetch_related(
@@ -67,3 +138,8 @@ class IdeaCommentsAPIView(APIView):
         comments = models.IdeaComment.objects.filter(idea=idea)
         serializer = serializers.IdeaSubscriptionsSerializer(comments, many=True)
         return Response(serializer.data)
+    
+class IdeaCommentViewSet(viewsets.ModelViewSet):
+    queryset = models.IdeaComment.objects.filter(parent__isnull=True).order_by('-created_at')
+    serializer_class = serializers.IdeaCommentSerializer
+"""

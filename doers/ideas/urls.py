@@ -1,7 +1,10 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
 
+router = DefaultRouter()
+router.register(r'ideas', views.IdeaViewSet, basename='idea')
+
 urlpatterns = [
-    path('api/ideas/', views.IdeasAPIView.as_view()),
-    path('api/ideas/idea/<slug:idea_slug>/', views.IdeaAPIView.as_view()),
+    path('api/', include(router.urls))
 ]

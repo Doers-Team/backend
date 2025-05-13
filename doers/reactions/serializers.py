@@ -23,6 +23,7 @@ class IdeaReactionsSerializer(serializers.Serializer):
     likes = IdeaLikesSerializer(many=True)
     comments = IdeaCommentsSerializer(many=True)
 
+"""
 class IdeasReactionsSerializer(serializers.ModelSerializer):
     reactions = serializers.SerializerMethodField()
 
@@ -36,3 +37,25 @@ class IdeasReactionsSerializer(serializers.ModelSerializer):
             'likes': IdeaLikesSerializer(obj.ideaLikes.all(), many=True).data,
             'comments': IdeaCommentsSerializer(obj.ideaComments.all(), many=True).data,
         }
+    
+class IdeaCommentSerializer(serializers.ModelSerializer):
+    replies = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.IdeaComment
+        fields = "__all__"
+
+    def get_replies(self, obj):
+        request = self.context.get("request")
+        depth = self.context.get("depth", 1)
+
+        if depth >= 3:
+            return []
+
+        serializer = IdeaCommentSerializer(
+            obj.replies.all().order_by("created_at"),
+            many=True,
+            context={**self.context, "depth": depth + 1},
+        )
+        return serializer.data
+"""
