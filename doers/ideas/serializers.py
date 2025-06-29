@@ -8,6 +8,10 @@ class IdeaReferenceImageSerializer(serializers.ModelSerializer):
         model = models.IdeaReferenceImage
         fields = ['id', 'reference_image']
 
+class IdeaCategoriesSerializer(serializers.Serializer):
+    value = serializers.CharField()
+    label = serializers.CharField()
+
 class IdeaSerializer(serializers.ModelSerializer):
     images = IdeaReferenceImageSerializer(many=True, read_only=True)
     ideaSubscriptions = IdeaSubscriptionsSerializer(many=True, read_only=True)

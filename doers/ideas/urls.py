@@ -6,5 +6,6 @@ router = DefaultRouter()
 router.register(r'ideas', views.IdeaViewSet, basename='idea')
 
 urlpatterns = [
-    path('api/', include(router.urls))
+    path('api/ideas/categories/', views.IdeaCategoriesListView.as_view(), name='idea-categories-list'),
+    path('api/', include(router.urls)),
 ]
