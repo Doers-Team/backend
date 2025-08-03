@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 
 
-class Doer(models.Model):
+"""class Doer(models.Model):
     id = models.SlugField(primary_key=True, unique=True, blank=True)
     nickname = models.CharField(max_length=255, unique=True)
     email = models.EmailField()
@@ -19,4 +19,4 @@ class Doer(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.nickname}"
+        return f"{self.nickname}"""

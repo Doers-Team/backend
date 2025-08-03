@@ -13,6 +13,8 @@ class IdeaCategoriesSerializer(serializers.Serializer):
     label = serializers.CharField()
 
 class IdeaSerializer(serializers.ModelSerializer):
+    #doer = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    doer = serializers.StringRelatedField()
     images = IdeaReferenceImageSerializer(many=True, read_only=True)
     ideaSubscriptions = IdeaSubscriptionsSerializer(many=True, read_only=True)
     ideaLikes = IdeaLikesSerializer(many=True, read_only=True)

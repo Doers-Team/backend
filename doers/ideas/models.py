@@ -2,7 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from . import validators
-from users.models import Doer
+from django.contrib.auth.models import User
 
 
 class IdeaCategory(models.TextChoices):
@@ -34,7 +34,7 @@ class Idea(models.Model):
     reference_video = models.FileField(upload_to="ideas/videos", validators=[validators.validate_video_file], blank=True)
     category = models.CharField(max_length=50, choices=IdeaCategory.choices)
 
-    doer = models.ForeignKey(Doer, on_delete=models.CASCADE, related_name="ideas")
+    doer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ideas")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
