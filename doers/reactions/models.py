@@ -11,9 +11,12 @@ class IdeaSubscription(models.Model):
 
 class IdeaLike(models.Model):
     idea = models.ForeignKey(Idea, on_delete=models.CASCADE, related_name="ideaLikes")
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('idea', 'author')
 
 class IdeaComment(models.Model):
     text = models.TextField()

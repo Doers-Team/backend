@@ -36,10 +36,9 @@ class LoginView(APIView):
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
 def profile_view(request):
     user = request.user
     return Response({
+        'id': user.id,
         'username': user.username,
-        'email': user.email,
     })

@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from . import models
 from . import serializers
 
@@ -12,6 +13,9 @@ class IdeaViewSet(viewsets.ModelViewSet):
     queryset = models.Idea.objects.all()
     serializer_class = serializers.IdeaSerializer
     lookup_field = 'id'
+
+    def perform_create(self, serializer):
+        serializer.save(doer=self.request.user)
 
 class IdeaCategoriesListView(APIView):
     def get(self, request):

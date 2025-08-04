@@ -3,4 +3,4 @@ from . import models
 
 
 admin.site.register(models.Idea)
-admin.site.register(models.IdeaReferenceImage)
+#admin.site.register(models.IdeaReferenceImage)

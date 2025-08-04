@@ -4,6 +4,8 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import status
+from django.shortcuts import get_object_or_404
+
 from . import models
 from ideas.models import Idea
 from . import serializers
@@ -19,6 +21,17 @@ class IdeaLikeViewSet(viewsets.ModelViewSet):
         except Idea.DoesNotExist:
             raise NotFound("Idea not found")
         return models.IdeaLike.objects.filter(idea=idea)
+    
+    def create(self, request, idea_id=None):
+        idea = get_object_or_404(Idea, id=idea_id)
+        user = request.user
+        like, created = models.IdeaLike.objects.get_or_create(idea=idea, author=user)
+
+        if not created:
+            like.delete()
+            return Response({"message": "Like removed."}, status=status.HTTP_200_OK)
+
+        return Response({"message": "Like added."}, status=status.HTTP_201_CREATED)
 
     def perform_create(self, serializer):
         idea_id = self.kwargs.get('idea_id')
@@ -62,7 +75,7 @@ class IdeaCommentViewSet(viewsets.ModelViewSet):
 class IdeaReactionsAPIView(APIView):
     def get(self, request, idea_id):
         try:
-            idea = Idea.objects.get(id=idea_id)
+            idea = get_object_or_404(Idea, id=idea_id)
         except Idea.DoesNotExist:
             return Response({'error': f'Idea "{idea_id}" not found'}, status=status.HTTP_404_NOT_FOUND)
         
@@ -76,6 +89,7 @@ class IdeaReactionsAPIView(APIView):
             'comments': comments,
         })
         return Response(serializer.data)
+
 
 """
 class IdeasReactionsAPIView(APIView):

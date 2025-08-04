@@ -12,11 +12,13 @@ class IdeaLikesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.IdeaLike
         fields = '__all__'
+        read_only_fields = ['idea', 'author']
 
 class IdeaCommentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.IdeaComment
         fields = '__all__'
+        read_only_fields = ['idea', 'author']
 
 class IdeaReactionsSerializer(serializers.Serializer):
     subscriptions = IdeaSubscriptionsSerializer(many=True)

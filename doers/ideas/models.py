@@ -31,7 +31,7 @@ class Idea(models.Model):
     slogan = models.CharField(max_length=500)
     description = models.TextField()
     logo = models.ImageField(blank=True, upload_to="ideas/logos")
-    reference_video = models.FileField(upload_to="ideas/videos", validators=[validators.validate_video_file], blank=True)
+    #reference_video = models.FileField(upload_to="ideas/videos", validators=[validators.validate_video_file], blank=True)
     category = models.CharField(max_length=50, choices=IdeaCategory.choices)
 
     doer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ideas")
@@ -55,7 +55,7 @@ class Idea(models.Model):
     def __str__(self):
         return f"{self.title}"
     
-class IdeaReferenceImage(models.Model):
+'''class IdeaReferenceImage(models.Model):
     idea = models.ForeignKey(Idea, related_name='images', on_delete=models.CASCADE)
     reference_image = models.ImageField(upload_to='ideas/images')
     
@@ -64,4 +64,4 @@ class IdeaReferenceImage(models.Model):
             raise ValidationError("You can upload a maximum of 5 images per idea")
     
     def __str__(self):
-        return f"Image for {self.idea.title}"
+        return f"Image for {self.idea.title}"'''
